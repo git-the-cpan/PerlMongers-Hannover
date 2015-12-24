@@ -1,22 +1,15 @@
-use strict;
-use warnings;
-use autodie;
+use v6;
 
-use Test::More tests => 3;
+use Test;
+use lib 'lib';
+use IO::Capture::Simple;
 
-use Capture::Tiny qw(capture_stdout);
+plan 1;
 
-require_ok('PerlMongers::Hannover');
+use PerlMongers::Hannover;
 
-{
-    # add "lib" to Perl's path, so perldoc will see it in "plain" perl tests
-    # i.e. tests run directly from perl, not via prove etc.
-    $ENV{"PERL5LIB"} = $ENV{"PERL5LIB"} ? $ENV{"PERL5LIB"} . ":lib" : "lib";
-    use PerlMongers::Hannover qw(info);
-    my $stdout = capture_stdout { info() };
+my $output = capture_stdout { info.say; };
 
-    ok(length $stdout > 0, "info() generates output");
-    like($stdout, qr/Hannover Perl Mongers/, "Perl mongers name in output");
-}
+ok $output ~~ m/'Hannover Perl Mongers'/;
 
-# vim: expandtab shiftwidth=4 softtabstop=4
+# vim: ft=perl6 expandtab shiftwidth=4 softtabstop=4
